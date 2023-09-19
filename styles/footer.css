@@ -1,0 +1,19 @@
+.footer {
+    position: absolute;
+    height: 30px;
+    background-color: rgb(192, 192, 192);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;;
+    align-items: center;
+}
+
+.creation-tag {
+    margin-right: 20px;
+}
+
+.version-tag {
+    margin-left: 20px;
+}

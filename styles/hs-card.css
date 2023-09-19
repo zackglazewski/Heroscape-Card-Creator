@@ -1,0 +1,9 @@
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cover-template {
+    width: 1000px;
+}
