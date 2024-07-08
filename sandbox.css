@@ -1,0 +1,537 @@
+html, body {margin:0;padding:0}
+
+.x2cc-font-loader {
+    position: relative;
+    color: transparent;
+}
+#work-area {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+#stage {
+    background-color: blue;
+    width: 750px;
+    height: 750px;
+    min-width: 750px;
+    position: relative;
+/*    border: 2px solid black; */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+canvas { 
+    position: absolute;
+    text-rendering: optimizeLegibility; /* firefox */
+    font-feature-settings: "kern" 1; /* ie, edge, safari? */ /* setting works on DOM for IE11/Edge14, but not canvas. fiddle I made (modified from SO answer) to test: http://jsfiddle.net/frg17mnt/ */
+    font-kerning: normal; /* standard */
+
+    /* fonts are anti-aliased by default, but are too bold on macs without these lines */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+#input-layer {z-index: 6; top:0; left: 0; width: 750px; height: 750px; border:none;}
+#text-layer { z-index: 5; top:0; left: 0; }
+#graphics-layer { z-index: 4; display: none; }
+#background-layer { z-index: 3; top:0; left: 0; }
+#image-layer {z-index: 2; top:0; left: 0; }
+#fog-layer {z-index: 1; top:0; left: 0; }
+
+#inputForm input, #inputForm textarea {
+	position: absolute;
+	color: transparent;
+    border: none;
+    background: transparent;  /*rgba(0,0,0,0.3); */
+    z-index: 10;
+    resize: none;
+}
+
+#inputForm input:focus, #inputForm textarea:focus {
+    background: rgba(128,128,255,1);
+    border: solid 1px rgb(136,136,136);
+    color: white;
+}
+
+.title {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 200px;
+    z-index: 100;
+}
+
+.title-text {
+    position: absolute;
+    padding: 10px;
+    text-align:left;
+    font-family:'ScapeCondensedHeavy';
+    font-size:150%;
+    line-height:.7em;
+    margin-top:.3em;
+    z-index:3
+}
+
+#media {
+    position: relative;
+    display:none;
+    width: 20%;
+    min-width: 300px;
+    z-index: 0;
+}
+
+.sidebar {
+    background-color: gray;
+    width: 100%;
+    height: 100%;
+
+
+/*    background: rgba(64,64,64,0.5); */
+    /*background: rgba(10,210,255,0.93);
+    background: rgba(50,150,205,0.93);
+    border: solid 2px black;
+    box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
+    box-sizing: border-box;*/
+    z-index: 100;
+}
+
+
+.media-close-button {
+    font-family: 'ScapeCondensedBold';
+	text-transform: uppercase;
+	font-size: 16.65px;
+	letter-spacing: -0.156px;
+
+    width: 120px;
+    padding: 5px;
+    background: #222;
+    color: #ddd;
+    border: none;        
+    cursor: pointer;
+
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+#generalName {
+    z-index: 12;
+}
+
+#options-container {
+    display: flex;
+    position:relative;
+}
+
+#heading {
+    width: 20%;
+    min-width: 260px;
+    display: flex;
+    flex-direction: column;
+}
+
+#options {
+    flex: 1 1 1;
+    gap: 20px;
+    min-height: 75px;
+    max-height: 75px;
+}
+
+.title-block {
+    display: inline-block;
+}
+
+#container {
+    display: flex;
+    height: 100vh;
+}
+
+.close-button {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+
+    font-family: 'ScapeCondensedBold';
+	text-transform: uppercase;
+	font-size: 16.65px;
+	letter-spacing: -0.156px;
+
+    width: 120px;
+    padding: 5px;
+    background: #222;
+    color: #ddd;
+    border: none;        
+    cursor: pointer;
+}
+
+.label-block {
+    display: block;
+    margin: 20px;
+
+}
+.x2cc-template-label {
+    width: 100px;
+    font-family: 'ScapeCondensedHeavy';
+    font-size: 20px;
+    z-index: 4;
+}
+
+.x2cc-template-name {
+    left: 325px;
+    top: 50px;
+    width: 100px;
+    text-align: center;
+    font-family: 'ScapeCondensed';
+    z-index: 4;
+}
+
+
+.x2cc-card-name {
+    position: absolute;
+    left: 157px;
+    top: 140px;
+    width: 180px;
+    height: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    line-height: 1.03;
+    overflow: hidden;
+    background-color: white;
+    font-family: 'ScapeCondensedHeavy';
+    font-size: 18px;
+}
+
+.x2cc-tribe-name {
+    position: absolute;
+    left: 157px;
+    top: 170px;
+    width: 180px;
+    height: 25px;
+    text-align: center;
+    text-transform: uppercase;
+    line-height: 1.03;
+    overflow: hidden;
+    background-color: white;
+    font-family: 'ScapeCondensed';
+    font-size: 16px;
+}
+
+.x2cc-attribute {
+	left: 35px; /* which is 145-100, /* right: 145px; /* 290px; */
+	text-align: right;
+	font-family: 'ScapeCondensedBold';
+	text-transform: uppercase;
+	font-size: 14.6px; /* 29.2px; */
+    margin-top: -14.6px; /* -13.14px; /* font-size * 0.9 */
+    width: 110px; /* 220px; */
+    background-color: white;
+}
+
+.x2cc-species {
+	top: 322px; /* 644px; */
+}
+
+.x2cc-uniqueness {
+	top: 347.5px; /* 695px; */
+}
+
+.x2cc-class {
+	top: 372.5px; /* 745px; */
+}
+
+.x2cc-personality {
+	top: 398px; /* 796px; */
+}
+
+.x2cc-size {
+	font-size: 20.85px; /* 41.7px; */
+    margin-top: -20.85px; /*-18.765px; /* font-size * 0.9 */
+	top: 432.5px; /* 865px; */
+}
+
+.x2cc-life-value {
+    font-size: 29px; /* 58px */
+    margin-top: -29px;
+    left: 465px; /* 485px; /* 970px */
+    top: 393px; /* 786px */
+    text-align: center;
+    font-family: 'ScapeBold';
+    width: 40px;
+}
+
+.x2cc-spec-value {
+    font-size: 25px; /* 50px */
+    margin-top: -25px;
+    left: 524px; /*544px; /* 1088px */
+    text-align: center;
+    font-family: 'ScapeBold';
+    width: 40px;
+}
+
+.x2cc-move-value {
+    top: 445.5px; /* 891 */
+}
+
+.x2cc-range-value {
+    top: 494px; /* 988px */
+}
+
+.x2cc-attack-value {
+    top: 542.5px; /* 1085px */
+}
+
+.x2cc-defense-value {
+    top: 591px; /* 1182px */
+}
+
+.x2cc-points-value {
+    font-size: 25px; /* 50px */
+    margin-top: -25px;
+    left: 454.5px; /* 484.5px; /* 969px */
+    top: 637px; /* 1274px */
+    text-align: center;
+    font-family: 'ScapeBold';
+    width: 60px;
+}
+
+
+/* our hacky special powers editor stuff. i sure wish the dom version worked out. */
+
+.x2cc-action-box {
+    position:absolute;
+    top:60px;
+    left:30px;
+    width: 690px;
+    height: 630px;
+    padding: 10px 0;
+/*    background: rgba(64,64,64,0.5); */
+    background: rgba(10,210,255,0.93);
+    background: rgba(50,150,205,0.93);
+    border: solid 2px black;
+    box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
+    box-sizing: border-box;
+    display: none;
+    z-index: 100;
+}
+
+.action-button {
+    font-family: 'ScapeCondensedBold';
+	text-transform: uppercase;
+	font-size: 16.65px;
+	letter-spacing: -0.156px;
+
+    display:block;
+    width: 600px;
+    margin-left:auto;
+    margin-right:auto;
+/*    margin-bottom: 5px; */
+    border: 0;
+    background: rgba(200,200,200,0.5);
+    padding: 5px;
+    border-bottom: solid 1px #444;
+}
+
+#scale-control {
+}
+
+.scale-label {
+    font-family: 'ScapeCondensedBold';
+	text-transform: uppercase;
+	font-size: 16.65px;
+	letter-spacing: -0.156px;
+    margin-left: 20px;
+
+    display: inline-block;
+}
+
+.render-list {
+    font-family: 'ScapeCondensedBold';
+	text-transform: uppercase;
+	font-size: 16.65px;
+	letter-spacing: -0.156px;
+    margin-left: 20px;
+
+    display: inline-block;
+}
+
+.media-button {
+    font-family: 'ScapeCondensedBold';
+	text-transform: uppercase;
+	font-size: 16.65px;
+	letter-spacing: -0.156px;
+
+    width: 120px;
+    padding: 5px;
+    background: #222;
+    color: #ddd;
+    border: none;        
+    cursor: pointer;
+    margin: 10px;
+}
+
+#imageUploader {
+    align-items: center;
+    justify-content: center;
+    margin: 20px;
+}
+
+.x2cc-action-button {
+    font-family: 'ScapeCondensedBold';
+	text-transform: uppercase;
+	font-size: 16.65px;
+	letter-spacing: -0.156px;
+
+    width: 240px;
+    padding: 5px;
+    margin-left: 20px;
+    background: #222;
+    color: #ddd;
+    border: none;        
+    cursor: pointer;
+}
+
+.x2cc-modal-heading {
+    font-family: 'ScapeCondensedHeavy';
+    font-size: 30px;
+    display:block;
+    width: 600px;
+    margin-left:auto;
+    margin-right:auto;
+    padding-bottom: 10px;
+}
+
+.x2cc-modal-button {
+    font-family: 'ScapeCondensedBold';
+	text-transform: uppercase;
+	font-size: 16.65px;
+	letter-spacing: -0.156px;
+
+    width: 120px;
+    padding: 5px;
+    margin-left: 530px;
+    background: #222;
+    color: #ddd;
+    border: none;        
+    cursor: pointer;
+}
+
+.x2cc-powers-heading {
+    font-family: 'ScapeCondensedBold';
+	text-transform: uppercase;
+	font-size: 16.65px;
+	letter-spacing: -0.156px;
+
+    display:block;
+    width: 600px;
+    margin-left:auto;
+    margin-right:auto;
+/*    margin-bottom: 5px; */
+    border: 0;
+    background: rgba(200,200,200,0.5);
+    padding: 5px;
+    border-bottom: solid 1px #444;
+}
+
+.x2cc-powers-text {
+    font-family: 'ScapeCondensed';
+	font-size: 15.2px;
+	line-height: 1.17em;
+	letter-spacing: 0.375px;
+
+    display: block;
+    width: 600px;
+    margin-left:auto;
+    margin-right:auto;
+    height: 70px;
+    border: 0;
+    background: rgba(200,200,200,0.5);
+    resize: none;
+    padding: 5px;
+    margin-bottom: 20px;
+}
+
+::-ms-clear { 
+    display: none; /* fix for IE10+ inserting the "x" clear button in text fields */
+}
+
+
+#powersClickReceiver {
+    position: absolute;
+    left: 162px;
+    top: 200px;
+    width: 225px;
+    height: 500px;
+    z-index: 50; 
+    cursor: pointer;
+    /*background: rgba(0,0,0,0.3);*/ /* needed for IE11 running on Win7. works without on Win10 */
+}
+
+#heroImageClickReceiver {
+    position: absolute;
+    left: 390px;
+    top: 120px;
+    width: 200px;
+    height: 230px;
+    z-index: 50;
+    cursor: pointer;
+    /*background: rgba(0, 0, 0, 0.3);*/
+}
+
+.x2cc-preview-button {
+    font-family: 'ScapeCondensedBold';
+	text-transform: uppercase;
+	font-size: 16.65px;
+	letter-spacing: -0.156px;
+
+    width: 110px;
+    background: #222;
+    color: #ddd;
+    border: none;        
+    cursor: pointer;
+
+    /*position: absolute;*/
+    padding: 5px;
+    margin-left: 20px;
+    text-align: center;
+    font-family: 'ScapeCondensedBold';
+    z-index: 4;
+    display: block;
+}
+
+#functions {
+    background-color: white;
+    width: 160px;
+    max-width: 160px;
+    min-width: 160px;
+}
+
+.x2cc-save-button {
+    
+    font-family: 'ScapeCondensedBold';
+	text-transform: uppercase;
+	font-size: 16.65px;
+	letter-spacing: -0.156px;
+
+    width: 110px;
+    padding: 5px;
+    margin-top: 5px;
+    margin-left: 20px;
+    background: #222;
+    color: #ddd;
+    border: none;        
+    cursor: pointer;
+    display: block;
+    /*position: absolute;*/
+
+    text-align: center;
+    font-family: 'ScapeCondensedBold';
+    z-index: 4;
+}
+
+#renderImg {
+/*    max-width: 100%; */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
