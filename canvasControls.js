@@ -196,9 +196,17 @@ function removeImage(index) {
     drawAllImages();
 }
 
+const getTouchPos = (canvas, touchEvent) => {
+    const rect = canvas.getBoundingClientRect();
+    const touch = touchEvent.touches[0];
+    return {
+        x: touch.clientX - rect.left,
+        y: touch.clientY - rect.top
+    };
+};
+
 input_canvas.addEventListener('mousedown', (e) => {
     if (selectedImageIndex >= 0) {
-
         const image = imagesToPlace[selectedImageIndex];
         isDragging = true;
         dragOffsetX = e.offsetX - image.x;
@@ -211,8 +219,6 @@ input_canvas.addEventListener('mousemove', (e) => {
         const image = imagesToPlace[selectedImageIndex];
         imgX = e.offsetX - dragOffsetX;
         imgY = e.offsetY - dragOffsetY;
-        // imgX = e.offsetX;
-        // imgY = e.offsetY;
         image.x = imgX;
         image.y = imgY;
         drawAllImages();
@@ -224,5 +230,37 @@ input_canvas.addEventListener('mouseup', () => {
 });
 
 input_canvas.addEventListener('mouseleave', () => {
+    isDragging = false;
+});
+
+input_canvas.addEventListener('touchstart', (e) => {
+    if (selectedImageIndex >= 0) {
+        const pos = getTouchPos(input_canvas, e);
+        const image = imagesToPlace[selectedImageIndex];
+        isDragging = true;
+        dragOffsetX = pos.x - image.x;
+        dragOffsetY = pos.y - image.y;
+    }
+    e.preventDefault(); // Prevent scrolling when touching the canvas
+});
+
+input_canvas.addEventListener('touchmove', (e) => {
+    if (isDragging && selectedImageIndex >= 0) {
+        const pos = getTouchPos(input_canvas, e);
+        const image = imagesToPlace[selectedImageIndex];
+        imgX = pos.x - dragOffsetX;
+        imgY = pos.y - dragOffsetY;
+        image.x = imgX;
+        image.y = imgY;
+        drawAllImages();
+    }
+    e.preventDefault(); // Prevent scrolling when touching the canvas
+});
+
+input_canvas.addEventListener('touchend', () => {
+    isDragging = false;
+});
+
+input_canvas.addEventListener('touchcancel', () => {
     isDragging = false;
 });
