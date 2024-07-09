@@ -156,8 +156,19 @@
         backgroundValSelector.value = e.target.value;
     });
 
-    document.getElementById('save-theme-button').addEventListener('click', async () => {
-        // Your dictionary object
+    function saveJSON(jsonString, filename) {
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename + '.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function saveTheme() {
         var json_dict = {}
         json_dict["primary_hue"] = primaryHueNumber.value;
         json_dict["primary_sat"] = primarySatNumber.value;
@@ -173,7 +184,32 @@
 
         json_dict["background_theme"] = document.getElementById("background-type").value;
     
-        // Convert dictionary to JSON string
+
+        const jsonString = JSON.stringify(json_dict, null, 2);
+
+        var filename = document.getElementById('cardName').value.toTitleCase().replace(/[^0-9a-z ]/gi, '').replace(' ', '-');
+        saveJSON(jsonString, filename);
+        
+    }
+
+    /*document.getElementById('save-theme-button').addEventListener('click', async () => {
+
+        var json_dict = {}
+        json_dict["primary_hue"] = primaryHueNumber.value;
+        json_dict["primary_sat"] = primarySatNumber.value;
+        json_dict["primary_val"] = primaryValNumber.value;
+
+        json_dict["secondary_hue"] = secondaryHueNumber.value;
+        json_dict["secondary_sat"] = secondarySatNumber.value;
+        json_dict["secondary_val"] = secondaryValNumber.value;
+
+        json_dict["background_hue"] = backgroundHueNumber.value;
+        json_dict["background_sat"] = backgroundSatNumber.value;
+        json_dict["background_val"] = backgroundValNumber.value;
+
+        json_dict["background_theme"] = document.getElementById("background-type").value;
+    
+
         const jsonString = JSON.stringify(json_dict, null, 2);
     
         try {
@@ -199,8 +235,8 @@
         } catch (err) {
             console.error('Error saving file:', err);
         }
-    });
-    
+    });*/
+
 
     function triggerThemeLoader() {
         document.getElementById('themeLoader').click();
@@ -1039,21 +1075,12 @@
     
         var filename = document.getElementById('cardName').value.toTitleCase().replace(/[^0-9a-z ]/gi, '').replace(' ', '-');
         var card = renderCard();
-        console.log("type: " + typeof(card));
         card.toBlobHD(function(blob) {
             saveAs(blob, filename + '.jpg');
         }, "image/jpeg");
-    
-        //    download(renderCard().toDataURL('image/jpeg', 1.0), filename, 'image/jpeg');
-    
-        //    var link = document.createElement('a');
-        //    var link = document.getElementById('downloadAnchor');
-        //    link.href = renderCard();
-        //    link.download = filename;
-        //    link.click();
     }
 
-    document.getElementById('save-card-button').addEventListener('click', async () => {
+    /*document.getElementById('save-card-button').addEventListener('click', async () => {
         // Get the filename from the input and format it
         var filename = document.getElementById('cardName').value.toTitleCase().replace(/[^0-9a-z ]/gi, '').replace(/ /g, '-');
     
@@ -1062,21 +1089,11 @@
             // Save the Blob using the new technique
             await saveBlob(blob, 'image/jpeg', filename + '.jpg');
         }, "image/jpeg");
-    });
+    });*/
     
     async function saveBlob(blob, fileType, suggestedName) {
         try {
-            const fileHandle = await window.showSaveFilePicker({
-                suggestedName: suggestedName,
-                types: [{
-                    description: `${fileType} Files`,
-                    accept: {[fileType]: ['.' + fileType.split('/')[1]]}
-                }]
-            });
-    
-            const writableStream = await fileHandle.createWritable();
-            await writableStream.write(blob);
-            await writableStream.close();
+            downloadBlob(blob);
     
             console.log('File saved successfully.');
         } catch (err) {
@@ -1084,7 +1101,16 @@
         }
     }
     
-    
+    async function downloadBlob(inputblob) {
+        const downloadelem = document.createElement("a");
+        const url = URL.createObjectURL(inputblob);
+        document.body.appendChild(downloadelem);
+        downloadelem.src = url;
+        downloadelem.click();
+        downloadelem.remove();
+        window.URL.revokeObjectURL(url);
+    }
+
     
     //TODO: verify that the old waitforwebfonts stuff is no longer needed in ie11 on windows 7
     
