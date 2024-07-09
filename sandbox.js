@@ -74,6 +74,137 @@
         textCtx.textBaseline = "top";
         textCtx.fillText(navigator.userAgent, 5, 10);
     }
+
+    var primaryHueSelector = document.getElementById("primary-hue");
+    var primaryHueNumber = document.getElementById("primary-hue-number");
+    primaryHueSelector.addEventListener('input', (e) => {
+        primaryHueNumber.value = e.target.value;
+    });
+    primaryHueNumber.addEventListener('input', (e) => {
+        primaryHueSelector.value = e.target.value;
+    });
+
+    var primarySatSelector = document.getElementById("primary-sat");
+    var primarySatNumber = document.getElementById("primary-sat-number");
+    primarySatSelector.addEventListener('input', (e) => {
+        primarySatNumber.value = e.target.value;
+    });
+    primarySatNumber.addEventListener('input', (e) => {
+        primarySatSelector.value = e.target.value;
+    });
+
+    var primaryValSelector = document.getElementById("primary-val");
+    var primaryValNumber = document.getElementById("primary-val-number");
+    primaryValSelector.addEventListener('input', (e) => {
+        primaryValNumber.value = e.target.value;
+    });
+    primaryValNumber.addEventListener('input', (e) => {
+        primaryValSelector.value = e.target.value;
+    });
+
+    var secondaryHueSelector = document.getElementById("secondary-hue");
+    var secondaryHueNumber = document.getElementById("secondary-hue-number");
+    secondaryHueSelector.addEventListener('input', (e) => {
+        secondaryHueNumber.value = e.target.value;
+    });
+    secondaryHueNumber.addEventListener('input', (e) => {
+        secondaryHueSelector.value = e.target.value;
+    });
+
+    var secondarySatSelector = document.getElementById("secondary-sat");
+    var secondarySatNumber = document.getElementById("secondary-sat-number");
+    secondarySatSelector.addEventListener('input', (e) => {
+        secondarySatNumber.value = e.target.value;
+    });
+    secondarySatNumber.addEventListener('input', (e) => {
+        secondarySatSelector.value = e.target.value;
+    });
+
+    var secondaryValSelector = document.getElementById("secondary-val");
+    var secondaryValNumber = document.getElementById("secondary-val-number");
+    secondaryValSelector.addEventListener('input', (e) => {
+        secondaryValNumber.value = e.target.value;
+    });
+    secondaryValNumber.addEventListener('input', (e) => {
+        secondaryValSelector.value = e.target.value;
+    });
+
+    var backgroundHueSelector = document.getElementById("background-hue");
+    var backgroundHueNumber = document.getElementById("background-hue-number");
+    backgroundHueSelector.addEventListener('input', (e) => {
+        backgroundHueNumber.value = e.target.value;
+    });
+    backgroundHueNumber.addEventListener('input', (e) => {
+        backgroundHueSelector.value = e.target.value;
+    });
+
+    var backgroundSatSelector = document.getElementById("background-sat");
+    var backgroundSatNumber = document.getElementById("background-sat-number");
+    backgroundSatSelector.addEventListener('input', (e) => {
+        backgroundSatNumber.value = e.target.value;
+    });
+    backgroundSatNumber.addEventListener('input', (e) => {
+        backgroundSatSelector.value = e.target.value;
+    });
+
+    var backgroundValSelector = document.getElementById("background-val");
+    var backgroundValNumber = document.getElementById("background-val-number");
+    backgroundValSelector.addEventListener('input', (e) => {
+        backgroundValNumber.value = e.target.value;
+    });
+    backgroundValNumber.addEventListener('input', (e) => {
+        backgroundValSelector.value = e.target.value;
+    });
+
+    document.getElementById('save-theme-button').addEventListener('click', async () => {
+        // Your dictionary object
+        var json_dict = {}
+        json_dict["primary_hue"] = primaryHueNumber.value;
+        json_dict["primary_sat"] = primarySatNumber.value;
+        json_dict["primary_val"] = primaryValNumber.value;
+
+        json_dict["secondary_hue"] = secondaryHueNumber.value;
+        json_dict["secondary_sat"] = secondarySatNumber.value;
+        json_dict["secondary_val"] = secondaryValNumber.value;
+
+        json_dict["background_hue"] = backgroundHueNumber.value;
+        json_dict["background_sat"] = backgroundSatNumber.value;
+        json_dict["background_val"] = backgroundValNumber.value;
+
+        json_dict["background_theme"] = document.getElementById("background-type").value;
+    
+        // Convert dictionary to JSON string
+        const jsonString = JSON.stringify(json_dict, null, 2);
+    
+        try {
+            // Show the file save dialog
+            const fileHandle = await window.showSaveFilePicker({
+                suggestedName: 'custom.json',
+                types: [{
+                    description: 'JSON Files',
+                    accept: {'application/json': ['.json']}
+                }]
+            });
+    
+            // Create a writable stream
+            const writableStream = await fileHandle.createWritable();
+            
+            // Write the JSON string to the file
+            await writableStream.write(jsonString);
+            
+            // Close the file and write the contents to disk
+            await writableStream.close();
+    
+            console.log('File saved successfully.');
+        } catch (err) {
+            console.error('Error saving file:', err);
+        }
+    });
+    
+
+    function triggerThemeLoader() {
+        document.getElementById('themeLoader').click();
+    }
     
     function drawText(ctx, text, x, y, family, size, color, alignment, spacing) {
         ctx.save();
@@ -907,7 +1038,9 @@
     function saveCard() {
     
         var filename = document.getElementById('cardName').value.toTitleCase().replace(/[^0-9a-z ]/gi, '').replace(' ', '-');
-        renderCard().toBlobHD(function(blob) {
+        var card = renderCard();
+        console.log("type: " + typeof(card));
+        card.toBlobHD(function(blob) {
             saveAs(blob, filename + '.jpg');
         }, "image/jpeg");
     
@@ -919,6 +1052,39 @@
         //    link.download = filename;
         //    link.click();
     }
+
+    document.getElementById('save-card-button').addEventListener('click', async () => {
+        // Get the filename from the input and format it
+        var filename = document.getElementById('cardName').value.toTitleCase().replace(/[^0-9a-z ]/gi, '').replace(/ /g, '-');
+    
+        // Render the card and get the Blob
+        renderCard().toBlobHD(async function(blob) {
+            // Save the Blob using the new technique
+            await saveBlob(blob, 'image/jpeg', filename + '.jpg');
+        }, "image/jpeg");
+    });
+    
+    async function saveBlob(blob, fileType, suggestedName) {
+        try {
+            const fileHandle = await window.showSaveFilePicker({
+                suggestedName: suggestedName,
+                types: [{
+                    description: `${fileType} Files`,
+                    accept: {[fileType]: ['.' + fileType.split('/')[1]]}
+                }]
+            });
+    
+            const writableStream = await fileHandle.createWritable();
+            await writableStream.write(blob);
+            await writableStream.close();
+    
+            console.log('File saved successfully.');
+        } catch (err) {
+            console.error('Error saving file:', err);
+        }
+    }
+    
+    
     
     //TODO: verify that the old waitforwebfonts stuff is no longer needed in ie11 on windows 7
     
@@ -976,14 +1142,135 @@
             }
         }
     }
+
+    function triggerFilePicker() {
+        document.getElementById('fileInput').click();
+    }
+
+
+    function loadTheme(event) {
+        const file = event.target.files[0];
+        
+        if (!file) {
+            console.error('No file selected.');
+            return;
+        }
+
+        // Check if the selected file is a JSON file
+        if (file.type !== 'application/json') {
+            console.error('Selected file is not a JSON file.');
+            alert('Please select a valid JSON file.');
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            try {
+                const json = JSON.parse(e.target.result);
+                console.log('Loaded JSON:', json);
+                
+                // Extract values from the JSON object
+                handleJSON(json);
+            } catch (err) {
+                console.error('Error parsing JSON:', err);
+                alert('The file contains invalid JSON.');
+            }
+        };
+
+        reader.onerror = function() {
+            console.error('Error reading the file:', reader.error);
+            alert('Error reading the file.');
+        };
+
+        // Read the file as text
+        reader.readAsText(file);
+    }
+
+    function handleJSON(json) {
+        // Extract and log values from the JSON object
+        const primaryHue = json.primary_hue;
+        const primarySaturation = json.primary_sat;
+        const primaryValue = json.primary_val;
+
+        const secondaryHue = json.secondary_hue;
+        const secondarySaturation = json.secondary_sat;
+        const secondaryValue = json.secondary_val;
+
+        const backgroundHue = json.background_hue;
+        const backgroundSaturation = json.background_sat;
+        const backgroundValue = json.background_val;
+        const backgroundTheme = json.background_theme;
+
+        primaryHueSelector.value = primaryHue;
+        primarySatSelector.value = primarySaturation;
+        primaryValSelector.value = primaryValue;
+
+        secondaryHueSelector.value = secondaryHue;
+        secondarySatSelector.value = secondarySaturation;
+        secondaryValSelector.value = secondaryValue;
+
+        backgroundHueSelector.value = backgroundHue;
+        backgroundSatSelector.value = backgroundSaturation;
+        backgroundValSelector.value = backgroundValue;
+
+        primaryHueNumber.value = primaryHue;
+        primarySatNumber.value = primarySaturation;
+        primaryValNumber.value = primaryValue;
+
+        secondaryHueNumber.value = secondaryHue;
+        secondarySatNumber.value = secondarySaturation;
+        secondaryValNumber.value = secondaryValue;
+
+        backgroundHueNumber.value = backgroundHue;
+        backgroundSatNumber.value = backgroundSaturation;
+        backgroundValNumber.value = backgroundValue;
+
+        document.getElementById("background-type").value = backgroundTheme;
+
+        changeTemplate();
+
+        document.getElementById("themeLoader").value = "";
+        // Implement further processing as needed, e.g., applying these values to a theme
+        //applyTheme(primaryHue, primarySaturation, primaryValue, secondaryHue, secondarySaturation, secondaryValue, backgroundHue, backgroundSaturation, backgroundValue, backgroundTheme);
+    }
+
+
+
+
+    function handleFileChange(event) {
+        const file = event.target.files[0];
+        if (file) {
+            console.log('Selected file:', file.name);
+            // You can add more logic to handle the selected file here
+        }
+    }
     
     //array holding our image assets. e.g., images["aquilla"] contains a loaded Image()
     var images = [];
-    
+    var backgrounds = [
+        {name: "branches", url: "assets/aquilla.png"},
+        {name: "desert", url:"assets/einar.png"},
+        {name: "mountains", url:"assets/jandar.png"},
+        {name: "forest", url:"assets/ullar.png"},
+        {name: "volcano", url:"assets/utgar.png"},
+        {name: "dust", url:"assets/valkrill.png"},
+        {name: "canyon", url:"assets/vydar.png"},
+        {name: "smoke", url:"assets/custom.png"}
+    ]
+
+    var background_images = [];
+
+    for (var i = 0, l = backgrounds.length; i < l; i++) {
+        var name = backgrounds[i].name;
+        background_images[name] = new Image();
+        background_images[name].src = backgrounds[i].url;
+    }
     //preloads passed list of image names/URLs into images[] (a global)
     //enhanced from http://www.javascriptkit.com/javatutors/preloadimagesplus.shtml
     function preloadImages(list) {
         var list = (typeof list != "object") ? [list] : list;
+        console.log(list);
         var loadedImages = 0;
         var nextAction = function() {};
         function imageLoadEvent() {
@@ -1000,6 +1287,9 @@
             images[name].onload = imageLoadEvent;
             images[name].onerror = imageLoadEvent;
         }
+
+        
+
         return {
             //return object with then() method
             then: function(f) {
@@ -1156,9 +1446,9 @@
                 "constantSat": false
             },
             "custom": {
-                "hue": 180 / 360,
-                "sat": 50 / 100,
-                "val": 30 / 100,
+                "hue": primaryHueSelector.value / 360,
+                "sat": primarySatSelector.value / 100,
+                "val": primaryValSelector.value / 100,
                 "constantSat": false
             },
             "einar": {
@@ -1209,9 +1499,9 @@
                 "invert": true
             },
             "custom": {
-                "hue": 324 / 360,
-                "sat": 90 / 100,
-                "val": 30 / 100,
+                "hue": secondaryHueSelector.value / 360,
+                "sat": secondarySatSelector.value / 100,
+                "val": secondaryValSelector.value / 100,
                 "invert": false
             },
             "einar": {
@@ -1367,6 +1657,220 @@
         }
         return pixelData;
     }
+
+    function adjustFog() {
+        var templateColors = [{
+            "aquilla": {
+                "hue": 46 / 360,
+                "sat": 75 / 100,
+                "val": 77 / 100,
+                "constantSat": false
+            },
+            "custom": {
+                "hue": primaryHueSelector.value / 360,
+                "sat": primarySatSelector.value / 100,
+                "val": primaryValSelector.value / 100,
+                "constantSat": false
+            },
+            "einar": {
+                "hue": 310 / 360,
+                "sat": 83 / 100,
+                "val": 22 /*19*/
+                / 100,
+                "constantSat": false
+            },
+            "jandar": {
+                "hue": 142 / 360,
+                "sat": -2 /*1*/
+                / 100,
+                "val": 95 /*92*/
+                / 100,
+                "constantSat": true
+            },
+            "ullar": {
+                "hue": 29 / 360,
+                "sat": 68 / 100,
+                "val": 40 / 100,
+                "constantSat": false
+            },
+            "utgar": {
+                "hue": 25 / 360,
+                "sat": 47 / 100,
+                "val": 14 / 100,
+                "constantSat": false
+            },
+            "vydar": {
+                "hue": 15 / 360,
+                "sat": 7 / 100,
+                "val": 39 / 100,
+                "constantSat": false
+            },
+            "valkrill": {
+                "hue": 28 / 360,
+                "sat": 57 / 100,
+                "val": 54 /*48*/
+                / 100,
+                "constantSat": false
+            }
+        }, {
+            "aquilla": {
+                "hue": 224 / 360,
+                "sat": 100 / 100,
+                "val": 8 / 100,
+                "invert": true
+            },
+            "custom": {
+                "hue": secondaryHueSelector.value / 360,
+                "sat": secondarySatSelector.value / 100,
+                "val": secondaryValSelector.value / 100,
+                "invert": false
+            },
+            "einar": {
+                "hue": 27 / 360,
+                "sat": 71 / 100,
+                "val": 61 / 100,
+                "invert": false
+            },
+            "jandar": {
+                "hue": 211 / 360,
+                "sat": 67 / 100,
+                "val": 67 / 100,
+                "invert": false
+            },
+            "ullar": {
+                "hue": 151 / 360,
+                "sat": 100 / 100,
+                "val": 27 / 100,
+                "invert": true
+            },
+            "utgar": {
+                "hue": 356 / 360,
+                "sat": 77 / 100,
+                "val": 46 / 100,
+                "invert": false
+            },
+            "vydar": {
+                "hue": 198 / 360,
+                "sat": 39 / 100,
+                "val": 59 / 100,
+                "invert": false
+            },
+            "valkrill": {
+                "hue": 41 / 360,
+                "sat": 57 / 100,
+                "val": 56 / 100,
+                "invert": true
+            }//        "valkrill": {"hue": 30/360, "sat":  99/100, "val": 31/100, "invert": true} //robbdaman's template, which is way too dark
+        }];
+        var generalName = document.getElementById('generalName').value;
+    
+        //working canvas
+        var canvas = document.createElement('canvas');
+        canvas.width = 1500;
+        canvas.height = 1500;
+        var ctx = canvas.getContext('2d');
+        ctx.willReadFrequently = true;
+    
+        //get mask pixels
+        
+        ctx.drawImage(images["mask"], 0, 0);
+        var maskPixels = ctx.getImageData(0, 0, 1500, 1500).data;
+    
+        //load mini background
+        // console.log("generalname " + generalName);
+        // if (generalName == "custom") {
+        //     console.log("drawing vydar");
+        //     ctx.drawImage(images["vydar"], 0, 0);
+        // } else {
+        //     console.log("drawing generalName");
+        //     ctx.drawImage(images[generalName], 0, 0);
+        // }
+
+        var background_name = document.getElementById("background-type").value;
+        if (generalName == "custom") {
+
+            ctx.drawImage(background_images[background_name], 0, 0);
+        } else {
+            ctx.drawImage(images[generalName], 0, 0);
+        }
+        // ctx.drawImage(images[generalName], 0, 0);
+        var bgPixels = ctx.getImageData(0, 0, 1500, 1500);
+        var pixels = bgPixels.data;
+    
+        //prepare pri(mary) and sec(ondary) color adjustment
+        var pri = {
+            hue: templateColors[0][generalName].hue,
+            sat: templateColors[0][generalName].sat,
+            valDiff: templateColors[0][generalName].val - templateColors[0]["vydar"].val
+        }
+    
+        var sec = {
+            hueDiff: templateColors[1][generalName].hue - templateColors[1]["vydar"].hue,
+            satDiff: templateColors[1][generalName].sat - templateColors[1]["vydar"].sat,
+            valDiff: templateColors[1][generalName].val - templateColors[1]["vydar"].val,
+            val: templateColors[1][generalName].val,
+            invert: templateColors[1][generalName].invert
+        }
+    
+
+        for (var i = 0, l = pixels.length; i < l; i += 4) {
+            switch (maskPixels[i + 2]) {
+            case 0:
+                //black--put miniature background here
+                if (generalName == "custom") {
+                    //blue--recolor inset area
+                    var hsv = rgbToHsv(pixels[i], pixels[i + 1], pixels[i + 2]);
+        
+                    //now shift to the general's color
+                    hsv.h += backgroundHueSelector.value / 360 - templateColors[1]["vydar"].hue;
+                    hsv.s += backgroundSatSelector.value / 100 - templateColors[1]["vydar"].sat;
+                    hsv.v += backgroundValSelector.value / 100 - templateColors[1]["vydar"].val;
+        
+                    //check to see if we invert light-to-dark
+                    if (sec.invert) {
+                        var overage = hsv.v - sec.val;
+                        //amount this pixel is over average template value
+                        if (overage > -0.05) {
+                            //trying to avoid shadow
+                            hsv.v -= 2 * overage;
+                            //move it this much above or below the average
+                        } else {
+                            //now we have to determine if we are in the shadow area
+                            var shadow = false;
+                            //check 13 pixels up, 9 to right. if it is a border we are in shadow.
+                            var j = i - (13 * 1500 - 9) * 4;
+                            if (maskPixels[j + 2] == 128) {
+                                shadow = true;
+                            } else if (maskPixels[i + 2 + 4 * 4] != 64 && maskPixels[i + 2 + 20 * 4] == 64 & maskPixels[i + 2 + 20 * 1500 * 4] != 128) {
+                                // special code to catch pixels at the top attribue pointy area
+                                shadow = true;
+                            } else if (maskPixels[i + 2 - 1500 * 9 * 4] == 128) {
+                                // special code to catch some missed pixels at the right curvy side of attribue area
+                                shadow = true;
+                            }
+        
+                            if (shadow) {
+                                hsv.v += 0.10;
+                            } else {
+                                hsv.v -= 2 * overage;
+                                //handle normally
+                            }
+                        }
+                    }
+        
+                    var rgb = hsvToRgb(hsv.h, hsv.s, hsv.v);
+                    pixels[i] = rgb.r;
+                    pixels[i + 1] = rgb.g;
+                    pixels[i + 2] = rgb.b;
+                }
+                
+                break;
+            default:
+                pixels[3] = 0;
+            }
+        }
+        return bgPixels;
+    }
     
     function changeTemplate() {
         //TODO: run through illustrator, reexport, and round to whole numbers. resulting size is about 1/2.5th of current size
@@ -1376,7 +1880,8 @@
         
     
         var generalName = document.getElementById('generalName').value;
-        fogCtx.drawImage(images[generalName], 0, 0);
+        fogCtx.putImageData(adjustFog(), 0, 0);
+        //fogCtx.drawImage(images[generalName], 0, 0);
         //    bgCtx.save();
         //    bgCtx.fillStyle='#d5d8d7';
         //    bgCtx.translate(434,149);
@@ -1387,7 +1892,23 @@
         //    drawSpecs(); //jandar and valkrill points area might need refreshing
     
         drawCard();
+
+        if (generalName == "custom") {
+            displayColorPicker();
+        } else {
+            disableColorPicker();
+        }
     
+    }
+
+    function disableColorPicker() {
+        var color_scheme = document.getElementById("color-picker");
+        color_scheme.style.display = "none";
+    }
+
+    function displayColorPicker() {
+        var color_scheme = document.getElementById("color-picker");
+        color_scheme.style.display = "block";
     }
     
     init();
@@ -1434,4 +1955,14 @@
     */
     
 
+
+    function showPage(pageId) {
+        // Hide all pages
+        const pages = document.querySelectorAll('.page');
+        pages.forEach(page => page.classList.remove('active'));
+    
+        // Show the selected page
+        const selectedPage = document.getElementById(pageId);
+        selectedPage.classList.add('active');
+    }
         

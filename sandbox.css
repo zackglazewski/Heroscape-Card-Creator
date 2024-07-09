@@ -72,6 +72,11 @@ canvas {
     z-index:3
 }
 
+#color-picker {
+    margin: 20px;
+    display: none;
+}
+
 #media {
     position: relative;
     display:none;
@@ -477,6 +482,15 @@ canvas {
     /*background: rgba(0, 0, 0, 0.3);*/
 }
 
+.scrollable-div {
+    width: 100%;
+    height: 450px;
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden; /* Hide horizontal scrollbar if not needed */
+    border: 1px solid #ccc; /* Optional: Add a border for visual effect */
+    padding: 10px; /* Optional: Add padding for inner content */
+}
+
 .x2cc-preview-button {
     font-family: 'ScapeCondensedBold';
 	text-transform: uppercase;
@@ -498,11 +512,107 @@ canvas {
     display: block;
 }
 
+input[type="range"] {
+    -webkit-appearance: none; /* Override default WebKit styles */
+    width: 100%; /* Full-width */
+    height: 10px; /* Custom height */
+    background: #ddd; /* Track color */
+    outline: none; /* Remove outline */
+    opacity: 0.7; /* Custom opacity */
+    transition: opacity 0.2s; /* Transition for opacity */
+}
+
+.slider-label {
+    font-family: 'ScapeCondensedBold';
+}
+
+input[type="range"]:hover {
+    opacity: 1; /* Full opacity on hover */
+}
+
+/* WebKit browsers */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default WebKit styles */
+    appearance: none;
+    width: 20px; /* Custom width */
+    height: 20px; /* Custom height */
+    background: #000; /* Thumb color */
+    cursor: pointer; /* Cursor on hover */
+}
+
+/* Firefox */
+input[type="range"]::-moz-range-thumb {
+    width: 20px; /* Custom width */
+    height: 20px; /* Custom height */
+    background: #000; /* Thumb color */
+    cursor: pointer; /* Cursor on hover */
+}
+
+.color-selector {
+    margin: 10px 10px 30px 0px;
+}
+
+#slider-number-container {
+    display: flex;
+    align-items: center;
+}
+
+#template-save-container {
+    display: flex;
+    align-items: center;
+}
+
+.number-picker {
+    width: 50px;
+    height: 20px;
+    margin-bottom: 15px;
+    margin-right: 5px;
+}
+
+.hidden-loader {
+    position: absolute;
+    display: none;
+}
+
+.page {
+    display: none;
+}
+.page.active {
+    display: block;
+}
+
+.instructions-button {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+
+    font-family: 'ScapeCondensedBold';
+	text-transform: uppercase;
+	font-size: 16.65px;
+	letter-spacing: -0.156px;
+
+    width: 140px;
+    height: 50px;
+    padding: 5px;
+    margin-top: 5px;
+    background: #222;
+    color: #ddd;
+    border: none;        
+    cursor: pointer;
+    display: inline-block;
+    /*position: absolute;*/
+
+    text-align: center;
+    font-family: 'ScapeCondensedBold';
+    z-index: 100;
+}
+
 #functions {
     background-color: white;
-    width: 160px;
-    max-width: 160px;
-    min-width: 160px;
+    width: 300px;
+    max-width: 300px;
+    min-width: 300px;
+    height: 550px;
 }
 
 .x2cc-save-button {
@@ -512,20 +622,45 @@ canvas {
 	font-size: 16.65px;
 	letter-spacing: -0.156px;
 
-    width: 110px;
+    width: 100px;
     padding: 5px;
     margin-top: 5px;
-    margin-left: 20px;
     background: #222;
     color: #ddd;
     border: none;        
     cursor: pointer;
-    display: block;
+    display: inline-block;
     /*position: absolute;*/
 
     text-align: center;
     font-family: 'ScapeCondensedBold';
     z-index: 4;
+}
+.x2cc-load-button {
+    
+    font-family: 'ScapeCondensedBold';
+	text-transform: uppercase;
+	font-size: 16.65px;
+	letter-spacing: -0.156px;
+
+    width: 90px;
+    padding: 5px;
+    margin-top: 5px;
+    margin-left: 10px;
+    background: #222;
+    color: #ddd;
+    border: none;        
+    cursor: pointer;
+    display: inline-block;
+    /*position: absolute;*/
+
+    text-align: center;
+    font-family: 'ScapeCondensedBold';
+    z-index: 4;
+}
+
+.function-buttons {
+    display: flex;
 }
 
 #renderImg {
