@@ -31,7 +31,7 @@ canvas {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-#input-layer {z-index: 6; top:0; left: 0; width: 750px; height: 750px; border:none;}
+#input-layer {z-index: 0; top:0; left: 0; width: 750px; height: 750px; border:none;}
 #text-layer { z-index: 5; top:0; left: 0; }
 #graphics-layer { z-index: 4; display: none; }
 #background-layer { z-index: 3; top:0; left: 0; }
@@ -582,8 +582,8 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .instructions-button {
-    position: absolute;
-    bottom: 5px;
+    position: fixed;
+    top: 5px;
     right: 5px;
 
     font-family: 'ScapeCondensedBold';
@@ -599,7 +599,6 @@ input[type="range"]::-moz-range-thumb {
     color: #ddd;
     border: none;        
     cursor: pointer;
-    display: inline-block;
     /*position: absolute;*/
 
     text-align: center;
